@@ -32,7 +32,7 @@ namespace lambhootDiscordBot
         {
             loadConfiguration();
             this.biGram = new PartialBiGram(this.logFileName);
-            this.hourlyTimer = new System.Timers.Timer(3600000 + 1800000);// 1.5 hour in milliseconds
+            this.hourlyTimer = new System.Timers.Timer((3600000 + 1800000)*5);// 1.5 hour in milliseconds
             // this.hourlyTimer = new System.Timers.Timer(1800000);// 0.5 hour in milliseconds
             this.hourlyTimer.Elapsed += HourlyTask;
         }
