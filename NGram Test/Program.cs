@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 // following https://github.com/NaamloosDT/DSharpPlus/wiki/Making-your-first-bot-in-C%23
 // https://github.com/DSharpPlus/DSharpPlus
-// new token: discord token MzAzNzQ5MjI4NTgzMzIxNjAy.GE_86x.MgDthR7xIaNY66FNaRUiUwbLeUSujstevNJZgM
 
 namespace lambhootDiscordBot
 {
