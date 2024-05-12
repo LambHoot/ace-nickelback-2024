@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Newtonsoft.Json;
 
 namespace lambhootDiscordBot
@@ -110,8 +111,7 @@ namespace lambhootDiscordBot
                         return;
                     }
                     if (e.Message.Content.ToLower().StartsWith("speak")) {
-                        string sentence = biGram.generateNewBiGramSentence();
-                        this.postMessage(sentence, this.generalChannel);
+                        speakWhenSpokenTo(e, true);
                         return;
                     }
                 } else if (e.Message.Author == this.discordBotUser) {
@@ -131,10 +131,10 @@ namespace lambhootDiscordBot
                     return;
                 }
 
+                // Reply to @'s from users
                 if(e.Message.MentionedUsers.Any(user => user.Id == this.discordBotUserId)) {
                     logInfo("Replying to @...");
-                    string sentence = biGram.generateNewBiGramSentence();
-                    await e.Message.RespondAsync(sentence);
+                    speakWhenSpokenTo(e);
                 }
             };
 
@@ -149,6 +149,27 @@ namespace lambhootDiscordBot
         private static void logInfo(string message) {
             Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | " + message);
         }
-    }
+
+        private async void speakWhenSpokenTo (MessageCreateEventArgs e, bool postInGeneral = false) {
+            string sentence = "oh shit something went wrong.";
+            string messageContent = e.Message.Content;
+            // Check if the message contains "@bot from:"
+            int fromIndex = messageContent.ToLower().IndexOf("from:");
+            if (fromIndex != -1) {
+                // Extract the input after "from:"
+                string input = messageContent.Substring(fromIndex + "from:".Length).Trim();
+                // Generate sentence starting from the input
+                sentence = biGram.generateNewBiGramSentence(input);
+            } else {
+                sentence = biGram.generateNewBiGramSentence();
+            }
+            // Determine whether to post in general, or respond to ping
+            if(postInGeneral) {
+                this.postMessage(sentence, this.generalChannel);
+            } else {
+                await e.Message.RespondAsync(sentence);
+            }
+        }
+     }
 
 }
